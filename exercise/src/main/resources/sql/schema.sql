@@ -1,0 +1,21 @@
+CREATE TABLE users
+(
+    id       UUID DEFAULT RANDOM_UUID(),
+    name     VARCHAR(50) NOT NULL,
+    email    VARCHAR(100) NOT NULL,
+    password VARCHAR(8) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT pk_ads PRIMARY KEY (id)
+);
+
+CREATE TABLE phone
+(
+    id   UUID DEFAULT RANDOM_UUID(),
+    number_phone INT NOT NULL,
+    city_code INT NOT NULL,
+    country_code INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    user_id UUID,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
