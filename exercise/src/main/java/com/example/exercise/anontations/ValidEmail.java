@@ -1,6 +1,6 @@
-package com.example.exercise.annotations;
+package com.example.exercise.anontations;
 
-import com.example.exercise.validations.RegexValidator;
+import com.example.exercise.validations.EmailValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -9,12 +9,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Constraint(validatedBy = RegexValidator.class)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
+@Constraint(validatedBy = EmailValidator.class)
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidRegex {
+public @interface ValidEmail {
+    String message() default "Invalid email format";
 
-    String message() default "Invalid format";
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }
