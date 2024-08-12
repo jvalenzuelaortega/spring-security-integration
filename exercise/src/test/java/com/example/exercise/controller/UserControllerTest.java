@@ -7,6 +7,7 @@ import com.example.exercise.dto.response.ResponseBaseDto;
 import com.example.exercise.dto.response.ResponseDefaultDto;
 import com.example.exercise.service.UserOperationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,7 +19,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -35,12 +37,14 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @DisplayName("Create user returns created status")
     @Test
-    void createUserReturnsCreatedStatus() throws UserOperationException {
+    void createUser_whenBodyIsCorrect_thenReturnsCreatedStatus() throws UserOperationException {
+        // Arrange
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .name("test")
                 .email("test@email.com")
-                .password("test1234")
+                .password("Test1234")
                 .phones(List.of(PhoneRequestDto.builder()
                         .number("1234567")
                         .cityCode("1")
@@ -57,14 +61,18 @@ class UserControllerTest {
                 .build();
         when(userOperationService.createUser(any(UserRequestDto.class))).thenReturn(responseBaseDto);
 
+        // Act
         ResponseEntity<ResponseBaseDto> response = userController.createUser(userRequestDto);
 
+        // Assert
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(responseBaseDto, response.getBody());
     }
 
+    @DisplayName("Create user then return throws UserOperationException")
     @Test
-    void createUserThrowsUserOperationException() {
+    void createUser_WhenExistException_thenLaunchUserOperationException() {
+        // Arrange
         UserRequestDto userRequestDto = UserRequestDto.builder()
                 .name("test")
                 .email("test@email.com")
@@ -77,13 +85,16 @@ class UserControllerTest {
                 .build();
         when(userOperationService.createUser(any(UserRequestDto.class))).thenThrow(new UserOperationException("Error"));
 
+        // Assert
         assertThrows(UserOperationException.class, () -> userController.createUser(userRequestDto));
     }
 
+    @DisplayName("Get user details by name and type default response returns ok status")
     @Test
-    void getUserDetailsByNameAndTypeResponseReturnsOkStatus() throws UserOperationException {
+    void getUser_whenByNameAndTypeDefaultIsCorrect_thenReturnsOkStatus() throws UserOperationException {
+        // Arrange
         String name = "John";
-        String typeResponse = "type";
+        String typeResponse = "default";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
                 .created(LocalDateTime.now())
@@ -94,18 +105,47 @@ class UserControllerTest {
                 .build();
         when(userOperationService.getUserByNameAndResponseType(name, typeResponse)).thenReturn(responseBaseDto);
 
+        // Act
         ResponseEntity<?> response = userController.getUserDetailsByNameAndTypeResponse(typeResponse, name);
 
+        // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(responseBaseDto, response.getBody());
     }
 
+    @DisplayName("Get user by name and type detail response returns ok status")
     @Test
-    void getUserDetailsByNameAndTypeResponseThrowsUserOperationException() {
+    void getUser_whenNameAndTypeDetailIsCorrect_thenReturnsOkStatus() throws UserOperationException {
+        // Arrange
+        String name = "John";
+        String typeResponse = "detail";
+        ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
+                .id(new UUID(1, 1))
+                .created(LocalDateTime.now())
+                .modified(LocalDateTime.now())
+                .lastLogin(LocalDateTime.now())
+                .token("token")
+                .isActive(true)
+                .build();
+        when(userOperationService.getUserByNameAndResponseType(name, typeResponse)).thenReturn(responseBaseDto);
+
+        // Act
+        ResponseEntity<?> response = userController.getUserDetailsByNameAndTypeResponse(typeResponse, name);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(responseBaseDto, response.getBody());
+    }
+
+    @DisplayName("Get user details by name and type response throws UserOperationException")
+    @Test
+    void getUser_whenNameAndTypeResponseIsCorrect_thenReturnThrowsUserOperationException() {
+        // Arrange
         String name = "John";
         String typeResponse = "type";
         when(userOperationService.getUserByNameAndResponseType(name, typeResponse)).thenThrow(new UserOperationException("Error"));
 
+        // Act
         assertThrows(UserOperationException.class, () -> userController.getUserDetailsByNameAndTypeResponse(typeResponse, name));
     }
 }

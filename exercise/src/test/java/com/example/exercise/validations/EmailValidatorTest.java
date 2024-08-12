@@ -8,38 +8,42 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 class EmailValidatorTest {
 
     private EmailValidator emailValidator;
-    private RegexPropertiesConfig regexPropertiesConfig;
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
 
     @BeforeEach
     void setUp() {
-        regexPropertiesConfig = Mockito.mock(RegexPropertiesConfig.class);
+        RegexPropertiesConfig regexPropertiesConfig = Mockito.mock(RegexPropertiesConfig.class);
         emailValidator = new EmailValidator(regexPropertiesConfig);
+
+        when(regexPropertiesConfig.getEmail()).thenReturn(EMAIL_REGEX);
     }
 
     @Test
     void isValid_ReturnsTrue_WhenEmailMatchesRegex() {
-        Mockito.when(regexPropertiesConfig.getEmail()).thenReturn("^[A-Za-z0-9+_.-]+@(.+)$");
+        // Act
         String validEmail = "test@example.com";
 
+        // Assert
         assertTrue(emailValidator.isValid(validEmail, null));
     }
 
     @Test
     void isValid_ThrowsBadFormatException_WhenEmailDoesNotMatchRegex() {
-        Mockito.when(regexPropertiesConfig.getEmail()).thenReturn("^[A-Za-z0-9+_.-]+@(.+)$");
+        // Act
         String invalidEmail = "invalid-email";
 
+        // Assert
         assertThrows(BadFormatException.class, () -> emailValidator.isValid(invalidEmail, null));
     }
 
     @Test
     void isValid_ThrowsBadFormatException_WhenEmailIsNull() {
-        Mockito.when(regexPropertiesConfig.getEmail()).thenReturn("^[A-Za-z0-9+_.-]+@(.+)$");
-
+        // Assert
         assertThrows(BadFormatException.class, () -> emailValidator.isValid(null, null));
     }
 }

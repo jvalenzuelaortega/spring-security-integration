@@ -1,33 +1,55 @@
 package com.example.exercise.controller;
 
 import com.example.exercise.dto.request.UserRequestDto;
-import com.example.exercise.dto.response.UserResponseDto;
-import com.example.exercise.service.UserService;
+import com.example.exercise.exceptions.UserOperationException;
+import com.example.exercise.dto.response.ResponseBaseDto;
+import com.example.exercise.service.UserOperationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Operaciones de usuario")
 @RestController
 @RequestMapping("/exercise/api")
 public class UserController {
 
-    Logger logger = LoggerFactory.getLogger(UserController.class);
+    private final UserOperationService userOperationService;
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserOperationService userOperationService) {
+        this.userOperationService = userOperationService;
     }
 
-    @PostMapping("/create-user")
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody @Valid UserRequestDto userRequestDto) {
-        UserResponseDto userResponseDto = userService.createUser(userRequestDto);
+    @Operation(
+            summary = "Crea un nuevo usuario con un token JWT",
+            description = "Crea un nuevo usuario con un token JWT y lo guarda en la base de datos"
+    )
+    @PostMapping(value = "/create-user", produces="application/json")
+    public ResponseEntity<ResponseBaseDto> createUser(@RequestBody @Valid UserRequestDto userRequestDto) throws UserOperationException {
+        ResponseBaseDto userDefaultResponseDto = userOperationService.createUser(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDefaultResponseDto);
+    }
 
-        logger.info("User {} created !!!", userRequestDto.getName());
-
-        return ResponseEntity.ok().body(userResponseDto);
+    @Operation(
+            summary = "Entrega la informacion del usuario",
+            description = "Obtiene la informacion de un usuario enviando un nombre y un tipo de respuesta (Puede ser default o detail)",
+            security = @SecurityRequirement(name = "Authorization")
+    )
+    @GetMapping(value="/get-user-by-name-and-type/{type}", produces = "application/json")
+    public ResponseEntity<ResponseBaseDto> getUserDetailsByNameAndTypeResponse(
+            @PathVariable(value = "type") String typeResponse,
+            @RequestParam(value = "name") String name) throws UserOperationException {
+        ResponseBaseDto userDetailResponseBaseDto = userOperationService.getUserByNameAndResponseType(name, typeResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(userDetailResponseBaseDto);
     }
 
 }
