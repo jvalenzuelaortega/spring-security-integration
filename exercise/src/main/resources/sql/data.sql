@@ -1,3 +1,3 @@
 -- Test data for validations
-INSERT INTO users (name, email, password)
-VALUES ('Juan Rodriguez', 'juan@rodriguez.org', 'hunter2');
+INSERT INTO users (name, email, password, token, active)
+VALUES ('Juan Valenzuela', 'juan@valenzuela.org', 'hunter1', 'token12345',true);
