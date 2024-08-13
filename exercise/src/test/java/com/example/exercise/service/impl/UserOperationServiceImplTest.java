@@ -2,6 +2,7 @@ package com.example.exercise.service.impl;
 
 import com.example.exercise.dto.request.PhoneRequestDto;
 import com.example.exercise.dto.request.UserRequestDto;
+import com.example.exercise.dto.request.UserUpdateRequestDto;
 import com.example.exercise.entity.UserEntity;
 import com.example.exercise.exceptions.UserOperationException;
 import com.example.exercise.dto.response.ResponseBaseDto;
@@ -169,6 +170,63 @@ class UserOperationServiceImplTest {
 
         assertThrows(IllegalArgumentException.class, () -> userOperationService.getUserByNameAndResponseType(name, null));
         verify(userRepository, times(1)).findUserByName(name);
+    }
+
+    @DisplayName("Create user when user already exists throws UserOperationException")
+    @Test
+    void createUser_whenUserAlreadyExists_thenThrowsUserOperationException() {
+        UserRequestDto userRequestDto = UserRequestDto.builder()
+                .name("test")
+                .email("test@mail.com")
+                .password("password")
+                .phones(List.of(PhoneRequestDto.builder()
+                        .number("1234567")
+                        .cityCode("1234")
+                        .countryCode("1234")
+                        .build()))
+                .build();
+        when(userRepository.findUserByEmail(userRequestDto.getEmail())).thenReturn(Optional.of(new UserEntity()));
+
+        assertThrows(UserOperationException.class, () -> userOperationService.createUser(userRequestDto));
+        verify(userRepository, times(1)).findUserByEmail(userRequestDto.getEmail());
+    }
+
+    @DisplayName("Update user email and password when user not found throws UserOperationException")
+    @Test
+    void updateUserEmailAndPassword_whenUserNotFound_thenThrowsUserOperationException() {
+        // Arrange
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
+                .email("newemail@test.com")
+                .password("NewPassword123")
+                .build();
+        when(userRepository.findUserByEmail(userUpdateRequestDto.getEmail())).thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(UserOperationException.class, () -> userOperationService.updateMailAndPasswordOfUser(userUpdateRequestDto));
+
+        // Assert
+        verify(userRepository, times(1)).findUserByName(userUpdateRequestDto.getName());
+    }
+
+    @DisplayName("Update user email and password when update fails throws UserOperationException")
+    @Test
+    void updateUserEmailAndPassword_whenUpdateFails_thenThrowsUserOperationException() {
+        // Assert
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
+                .email("newemail@test.com")
+                .password("NewPassword123")
+                .build();
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(new UUID(1, 1));
+        when(userRepository.findUserByName(userUpdateRequestDto.getName())).thenReturn(Optional.of(userEntity));
+        when(userRepository.updateEmailAndPasswordByUserId(userEntity.getId(), userUpdateRequestDto.getEmail(), userUpdateRequestDto.getPassword())).thenReturn(0);
+
+        // Act
+        assertThrows(UserOperationException.class, () -> userOperationService.updateMailAndPasswordOfUser(userUpdateRequestDto));
+
+        // Assert
+        verify(userRepository, times(1)).findUserByName(userUpdateRequestDto.getName());
+        verify(userRepository, times(1)).updateEmailAndPasswordByUserId(userEntity.getId(), userUpdateRequestDto.getEmail(), userUpdateRequestDto.getPassword());
     }
 
 }

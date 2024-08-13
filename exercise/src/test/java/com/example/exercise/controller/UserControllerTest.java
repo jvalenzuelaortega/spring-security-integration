@@ -2,6 +2,7 @@ package com.example.exercise.controller;
 
 import com.example.exercise.dto.request.PhoneRequestDto;
 import com.example.exercise.dto.request.UserRequestDto;
+import com.example.exercise.dto.request.UserUpdateRequestDto;
 import com.example.exercise.exceptions.UserOperationException;
 import com.example.exercise.dto.response.ResponseBaseDto;
 import com.example.exercise.dto.response.ResponseDefaultDto;
@@ -15,7 +16,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -53,9 +53,9 @@ class UserControllerTest {
                 .build();
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created(LocalDateTime.now())
-                .modified(LocalDateTime.now())
-                .lastLogin(LocalDateTime.now())
+                .created("")
+                .modified("")
+                .lastLogin("")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -97,9 +97,9 @@ class UserControllerTest {
         String typeResponse = "default";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created(LocalDateTime.now())
-                .modified(LocalDateTime.now())
-                .lastLogin(LocalDateTime.now())
+                .created("")
+                .modified("")
+                .lastLogin("")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -121,9 +121,9 @@ class UserControllerTest {
         String typeResponse = "detail";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created(LocalDateTime.now())
-                .modified(LocalDateTime.now())
-                .lastLogin(LocalDateTime.now())
+                .created("")
+                .modified("")
+                .lastLogin("")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -147,5 +147,45 @@ class UserControllerTest {
 
         // Act
         assertThrows(UserOperationException.class, () -> userController.getUserDetailsByNameAndTypeResponse(typeResponse, name));
+    }
+
+    @DisplayName("Update user email and password returns ok status")
+    @Test
+    void updateUserEmailAndPassword_whenBodyIsCorrect_thenReturnsOkStatus() throws UserOperationException {
+        // Arrange
+        String name = "user";
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
+                .email("newemail@test.com")
+                .password("NewPassword123")
+                .build();
+        ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
+                .id(new UUID(1, 1))
+                .created("")
+                .modified("")
+                .lastLogin("")
+                .token("token")
+                .isActive(true)
+                .build();
+        when(userOperationService.updateMailAndPasswordOfUser(any(UserUpdateRequestDto.class))).thenReturn(responseBaseDto);
+
+        // Act
+        ResponseEntity<ResponseBaseDto> response = userController.updateEmailAndPasswordOfUser(name, userUpdateRequestDto);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(responseBaseDto, response.getBody());
+    }
+
+    @DisplayName("Update user email and password throws UserOperationException")
+    @Test
+    void updateUserEmailAndPassword_whenExceptionThrown_thenThrowsUserOperationException() {
+        String name = "user";
+        UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
+                .email("newemail@test.com")
+                .password("NewPassword123")
+                .build();
+        when(userOperationService.updateMailAndPasswordOfUser(any(UserUpdateRequestDto.class))).thenThrow(new UserOperationException("Error"));
+
+        assertThrows(UserOperationException.class, () -> userController.updateEmailAndPasswordOfUser(name, userUpdateRequestDto));
     }
 }
