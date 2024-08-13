@@ -53,9 +53,9 @@ class UserControllerTest {
                 .build();
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created("")
-                .modified("")
-                .lastLogin("")
+                .created("2024-08-13 11:14:50")
+                .modified("2024-08-13 11:14:50")
+                .lastLogin("2024-08-13 11:14:50")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -97,9 +97,9 @@ class UserControllerTest {
         String typeResponse = "default";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created("")
-                .modified("")
-                .lastLogin("")
+                .created("2024-08-13 11:14:50")
+                .modified("2024-08-13 11:14:50")
+                .lastLogin("2024-08-13 11:14:50")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -121,9 +121,9 @@ class UserControllerTest {
         String typeResponse = "detail";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created("")
-                .modified("")
-                .lastLogin("")
+                .created("2024-08-13 11:14:50")
+                .modified("2024-08-13 11:14:50")
+                .lastLogin("2024-08-13 11:14:50")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -160,9 +160,9 @@ class UserControllerTest {
                 .build();
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
-                .created("")
-                .modified("")
-                .lastLogin("")
+                .created("2024-08-13 11:14:50")
+                .modified("2024-08-13 11:14:50")
+                .lastLogin("2024-08-13 11:14:50")
                 .token("token")
                 .isActive(true)
                 .build();
@@ -179,6 +179,7 @@ class UserControllerTest {
     @DisplayName("Update user email and password throws UserOperationException")
     @Test
     void updateUserEmailAndPassword_whenExceptionThrown_thenThrowsUserOperationException() {
+        // Act
         String name = "user";
         UserUpdateRequestDto userUpdateRequestDto = UserUpdateRequestDto.builder()
                 .email("newemail@test.com")
@@ -186,6 +187,7 @@ class UserControllerTest {
                 .build();
         when(userOperationService.updateMailAndPasswordOfUser(any(UserUpdateRequestDto.class))).thenThrow(new UserOperationException("Error"));
 
+        // Assert
         assertThrows(UserOperationException.class, () -> userController.updateEmailAndPasswordOfUser(name, userUpdateRequestDto));
     }
 }
