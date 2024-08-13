@@ -93,7 +93,7 @@ class UserControllerTest {
     @Test
     void getUser_whenByNameAndTypeDefaultIsCorrect_thenReturnsOkStatus() throws UserOperationException {
         // Arrange
-        String name = "John";
+        String name = "test";
         String typeResponse = "default";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
@@ -117,7 +117,7 @@ class UserControllerTest {
     @Test
     void getUser_whenNameAndTypeDetailIsCorrect_thenReturnsOkStatus() throws UserOperationException {
         // Arrange
-        String name = "John";
+        String name = "test";
         String typeResponse = "detail";
         ResponseBaseDto responseBaseDto = ResponseDefaultDto.builder()
                 .id(new UUID(1, 1))
@@ -141,7 +141,7 @@ class UserControllerTest {
     @Test
     void getUser_whenNameAndTypeResponseIsCorrect_thenReturnThrowsUserOperationException() {
         // Arrange
-        String name = "John";
+        String name = "test";
         String typeResponse = "type";
         when(userOperationService.getUserByNameAndResponseType(name, typeResponse)).thenThrow(new UserOperationException("Error"));
 

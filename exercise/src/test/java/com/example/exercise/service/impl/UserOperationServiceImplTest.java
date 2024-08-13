@@ -128,7 +128,7 @@ class UserOperationServiceImplTest {
     @Test
     void getUserByNameAndResponseType_whenUserExistsInDatabase_thenReturnsResponseBaseDto() throws UserOperationException {
         // Arrange
-        String name = "John";
+        String name = "test";
         String typeResponse = "default";
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);
@@ -162,7 +162,7 @@ class UserOperationServiceImplTest {
     @DisplayName("Get user by name and null response type return exception")
     @Test
     void getUserByNameAndResponseType_whenInvalidResponseType_thenReturnIllegalArgumentException() {
-        String name = "John";
+        String name = "test";
         UserEntity userEntity = new UserEntity();
         userEntity.setName(name);
 
