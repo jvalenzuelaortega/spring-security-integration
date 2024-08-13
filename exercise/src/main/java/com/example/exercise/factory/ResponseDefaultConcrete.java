@@ -3,6 +3,7 @@ package com.example.exercise.factory;
 import com.example.exercise.entity.UserEntity;
 import com.example.exercise.dto.response.ResponseBaseDto;
 import com.example.exercise.dto.response.ResponseDefaultDto;
+import com.example.exercise.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +17,10 @@ public class ResponseDefaultConcrete implements ResponseBuilder {
     public ResponseBaseDto buildResponse(UserEntity userEntity) {
         return ResponseDefaultDto.builder()
                 .id(userEntity.getId())
-                .created(null)
-                .modified(null)
-                .lastLogin(null)
+                .username(userEntity.getName())
+                .created(DateUtils.getLocalDateTime(userEntity.getCreatedAt()))
+                .modified(DateUtils.getLocalDateTime(userEntity.getUpdatedAt()))
+                .lastLogin(DateUtils.getLocalDateTime(userEntity.getCreatedAt()))
                 .token(userEntity.getToken())
                 .isActive(userEntity.isActive())
                 .build();

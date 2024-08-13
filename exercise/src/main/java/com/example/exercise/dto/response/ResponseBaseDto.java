@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @SuperBuilder
@@ -21,13 +19,13 @@ public class ResponseBaseDto {
     private String email;
 
     @JsonProperty("created")
-    private LocalDateTime created;
+    private String created;
 
     @JsonProperty("modified")
-    private LocalDateTime modified;
+    private String modified;
 
     @JsonProperty("last_login")
-    private LocalDateTime lastLogin;
+    private String lastLogin;
 
     @JsonProperty("token")
     private String token;

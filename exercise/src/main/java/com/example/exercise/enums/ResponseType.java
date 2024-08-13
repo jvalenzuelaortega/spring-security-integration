@@ -5,7 +5,8 @@ import java.util.Arrays;
 public enum ResponseType {
 
     USER_DEFAULT("default"),
-    USER_DETAIL("detail");
+    USER_DETAIL("detail"),
+    USER_UPDATE("update");
 
     private final String value;
 

@@ -8,6 +8,7 @@ public class ResponseDtoFactory {
         return switch (type) {
             case USER_DEFAULT -> ResponseDefaultConcrete.builder().build();
             case USER_DETAIL -> ResponseDetailConcrete.builder().build();
+            case USER_UPDATE -> ResponseUpdateConcrete.builder().build();
         };
     }
 }

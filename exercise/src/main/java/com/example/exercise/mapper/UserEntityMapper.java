@@ -1,6 +1,7 @@
 package com.example.exercise.mapper;
 
 import com.example.exercise.dto.request.UserRequestDto;
+import com.example.exercise.dto.request.UserUpdateRequestDto;
 import com.example.exercise.entity.UserEntity;
 import org.modelmapper.ModelMapper;
 
@@ -16,5 +17,16 @@ public class UserEntityMapper {
         });
 
         return modelMapper.map(userRequestDto, UserEntity.class);
+    }
+
+    public static UserEntity mapperToUserEntity(UserUpdateRequestDto userUpdateRequestDto) {
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.typeMap(UserUpdateRequestDto.class, UserEntity.class).addMappings(mapper -> {
+            mapper.map(UserUpdateRequestDto::getEmail, UserEntity::setEmail);
+            mapper.map(UserUpdateRequestDto::getPassword, UserEntity::setPassword);
+            mapper.map(UserUpdateRequestDto::getName, UserEntity::setName);
+        });
+
+        return modelMapper.map(userUpdateRequestDto, UserEntity.class);
     }
 }

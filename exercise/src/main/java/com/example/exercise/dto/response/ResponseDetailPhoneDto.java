@@ -12,8 +12,8 @@ public class ResponseDetailPhoneDto {
     private String number;
 
     @JsonProperty("city_code")
-    private String citycode;
+    private String cityCode;
 
     @JsonProperty("country_code")
-    private String contrycode;
+    private String countryCode;
 }

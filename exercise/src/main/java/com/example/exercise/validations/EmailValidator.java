@@ -29,6 +29,6 @@ public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
         if (email != null && Pattern.matches(emailRegex, email)) {
             return true;
         }
-        throw new BadFormatException("Email does not match the required format");
+        throw new BadFormatException("Email does not match the required format. Example: email@domail.com");
     }
 }

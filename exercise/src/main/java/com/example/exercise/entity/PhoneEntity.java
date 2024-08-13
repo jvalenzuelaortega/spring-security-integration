@@ -37,7 +37,7 @@ public class PhoneEntity {
     @Column(name = "country_code")
     private String countryCode;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
