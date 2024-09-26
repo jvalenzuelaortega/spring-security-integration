@@ -25,7 +25,7 @@ To simplify the construction of certain objects, the Lombok library has been use
 ### Installation 🔧
 Clone the project:
 ```
-git clone https://github.com/jvalenzuelaortega/assessment-exercise.git
+git clone https://github.com/jvalenzuelaortega/spring-security-integration.git
 ```
 Once cloned, to start the application, follow these steps:
 
