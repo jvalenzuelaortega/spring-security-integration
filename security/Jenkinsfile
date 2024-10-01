@@ -38,8 +38,8 @@ pipeline {
             steps {
                 dir(BASE_DIR) {
                     publishHTML(target: [
-                        reportName: 'Report for Financial Indicators App',
-                        reportDir: 'app/build/customJacocoReportDir/test/html',
+                        reportName: 'Report for Spring Security Integration',
+                        reportDir: 'build/customJacocoReportDir/test/html',
                         reportFiles: 'index.html',
                         keepAll: true,
                         alwaysLinkToLastBuild: true,
