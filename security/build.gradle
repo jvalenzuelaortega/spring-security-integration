@@ -2,6 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'jacoco'
+    id 'checkstyle'
 }
 
 group = 'com.integration'
@@ -56,4 +58,63 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Jacoco
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+// jacoco report
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                      exclude: [
+                          '**/security/annotations/**',
+                          '**/security/config/**',
+                          '**/security/dto/**',
+                          '**/security/enums/**',
+                          '**/security/exceptions/**',
+                          '**/security/SecurityApplication.class'
+                      ])
+        }))
+    }
+}
+
+// jacoco coverage rules
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+// checkstyle
+checkstyle {
+    toolVersion = "10.12.4"
+    config = rootProject.resources.text.fromFile('config/checkstyle/checkstyle.xml')
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = false
+        html.required = true
+    }
 }

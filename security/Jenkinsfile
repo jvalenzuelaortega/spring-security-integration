@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        BASE_DIR = 'security'
+    }
+
+    stages {
+        stage('Build app') {
+            steps {
+                dir(BASE_DIR) {
+                    sh 'gradle build'
+                }
+            }
+        }
+        stage('Test app') {
+            steps {
+                dir(BASE_DIR) {
+                    sh 'gradle test'
+                }
+            }
+        }
+        stage('Checkstyle Code') {
+            steps {
+                dir(BASE_DIR) {
+                    sh 'gradle check'
+                }
+            }
+        }
+        stage('Coverage code') {
+            steps {
+                dir(BASE_DIR) {
+                    sh 'gradle build jacocoTestReport'
+                }
+            }
+        }
+        stage('Report coverage') {
+            steps {
+                dir(BASE_DIR) {
+                    publishHTML(target: [
+                        reportName: 'Report for Financial Indicators App',
+                        reportDir: 'app/build/customJacocoReportDir/test/html',
+                        reportFiles: 'index.html',
+                        keepAll: true,
+                        alwaysLinkToLastBuild: true,
+                        allowMissing: false
+                    ])
+                }
+            }
+        }
+
+        stage('Finish') {
+            steps {
+                dir(BASE_DIR) {
+                    echo 'Finish pipeline stage'
+                }
+            }
+        }
+    }
+}
