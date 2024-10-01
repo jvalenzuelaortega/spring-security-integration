@@ -85,7 +85,7 @@ jacocoTestReport {
             fileTree(dir: it,
                       exclude: [
                           '**/security/annotations/**',
-                          '**/security/config/**',
+                          '**/security/configuration/**',
                           '**/security/dto/**',
                           '**/security/enums/**',
                           '**/security/exceptions/**',
