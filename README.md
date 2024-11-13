@@ -1,47 +1,47 @@
-# Ejercicio de Spring Boot con Spring Security
+# Spring Security Integration
 
-Esta aplicación demuestra cómo integrar Spring Boot con Spring Security utilizando JWT para la autenticación. Además, utiliza una base de datos en memoria (H2) para el almacenamiento temporal de datos.
+This application demonstrates how to integrate Spring Boot with Spring Security using JWT for authentication. It also uses an in-memory database (H2) for temporary data storage.
+The application exposes three main endpoints that allow:
 
-La aplicación expone tres endpoints principales que permiten:
+- Create a user: Generates a JWT token for the new user.
+- Search for a user: Requires JWT authentication to access user information.
+- Update a user: Allows updating the email and username, with JWT authentication required.
+  
+## Getting started 🚀
 
-- Crear un usuario: Genera un token JWT para el nuevo usuario.
-- Buscar un usuario: Requiere autenticación JWT para acceder a la información del usuario.
-- Actualizar un usuario: Permite actualizar el correo electrónico y el nombre de usuario, con autenticación JWT necesaria.
-## Comenzando 🚀
+To run the application, you will need some specific tools. Below are the necessary requirements:
 
-Para ejecutar la aplicación, necesitarás algunas herramientas específicas. A continuación, se detallan los requisitos necesarios:
-
-### Pre-requisitos 📋
+### Prerequisites 📋
 
 
-| Herramienta | Description |
+| Tool | Description |
 | --- | ----------- |
 | Java | 17.0.11 (Temurin) |
 | Gradle | 8.9 |
 
-***Importante***
-Para simplificar la construcción de ciertos objetos, se ha utilizado la biblioteca Lombok. En algunos casos, será necesario realizar configuraciones adicionales para su correcta implementación. Para mas detalles, revisar el siguiente link: https://www.baeldung.com/lombok-ide
+***Important***
+To simplify the construction of certain objects, the Lombok library has been used. In some cases, additional configurations will be necessary for correct implementation. For more details, check the following link: https://www.baeldung.com/lombok-ide
 
-### Instalación 🔧
-Importante clonar el proyecto:
+### Installation 🔧
+Clone the project:
 ```
-git clone https://github.com/jvalenzuelaortega/assessment-exercise.git
+git clone https://github.com/jvalenzuelaortega/spring-security-integration.git
 ```
-Una vez clonado, para iniciar la aplicación, sigue estos pasos:
+Once cloned, to start the application, follow these steps:
 
-- Navega al directorio exercise.
-- Abre una terminal en ese directorio.
-- Ejecuta el siguiente comando:
+- Navigate to the exercise directory.
+- Open a terminal in that directory.
+- Run the following command:
 
 ```
 gradle bootRun
 ```
 
-Este comando permitira arrancar la aplicacion SpringBoot
+This command allows you to start the Spring Boot application.
 
-#### Consideraciones para probar
+#### Considerations for testing
 
-Es importante destacar que, al iniciar la aplicación, se carga una base de datos en memoria (H2) con un esquema SQL y datos de prueba preconfigurados. Estos archivos se encuentran en la carpeta **sql** dentro del directorio **resources** de Spring.
+It is important to note that when the application starts, an in-memory database (H2) is loaded with a preconfigured SQL schema and test data. These files are located in the **sql** folder inside the Spring **resources** directory.
 
 📄 schema.sql
 ```sql
@@ -78,14 +78,14 @@ INSERT INTO users (name, email, password, token, active)
 VALUES ('Juan Valenzuela', 'juan@valenzuela.org', 'hunter1', 'token12345',true);
 ```
 
-#### Probando la aplicacion
-Esta aplicación ofrece tres endpoints principales que permiten realizar las siguientes operaciones:
+#### Testing the application
+This application offers three main endpoints that allow you to perform the following operations:
 
-- Crear un usuario
-- Obtener la información de un usuario
-- Actualizar el correo electrónico y la contraseña de un usuario
+- Create a user
+- Obtain a user's information
+- Update a user's email and password
 
-➡️ Para crear un usuario, ocupa el siguiente curl
+➡️ To create a user, use the following curl
 
 ```
 curl --location 'localhost:8080/exercise/api/create-user' \
@@ -108,14 +108,14 @@ curl --location 'localhost:8080/exercise/api/create-user' \
    ]
 }'
 ```
-##### Ejemplo
+##### Example
 
-![Creacion de usuario](images/create-user.gif)
+![Create user](images/create-user.gif)
 
 
-Este endpoint generará un token asociado al usuario que estamos creando. Este token se utilizará para autenticarse en los otros dos endpoints. Cabe destacar que solo este endpoint puede ser utilizado sin un token.
+This endpoint will generate a token associated with the user we are creating. This token will be used to authenticate to the other two endpoints. It is worth noting that only this endpoint can be used without a token.
 
-✅ Respuesta esperada
+✅ Expected response
 
 ```
 {
@@ -128,21 +128,21 @@ Este endpoint generará un token asociado al usuario que estamos creando. Este t
 }
 ```
 
-➡️ Curl para obtener informacion del usuario: 
-Es importante destacar que se debe incluir un parámetro en la ruta, el cual puede ser:
+➡️ Curl to get user information: 
+It is important to note that a parameter must be included in the route, which can be:
 
-- default: Proporciona una respuesta más concisa (la misma que al crear un usuario).
-- detail: Ofrece información completa sobre el usuario.
+- default: Provides a more concise response (the same as when creating a user).
+- detail: Provides complete information about the user.
 
 ```
 curl --location 'localhost:8080/exercise/api/get-user-by-name-and-type/detail?name=Robert%20Rodriguez' \
 --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJSb2JlcnQgUm9kcmlndWV6IiwiaWF0IjoxNzIzNTE2MDgzLCJleHAiOjE3MjM1MTk2ODN9.pyfUHE4C6zbcpQhjjROvLpdCA3LV6DAP1LnfwZCdzPU'
 ```
 
-![Obtener de usuario](images/get-user.gif)
+![Get user](images/get-user.gif)
 
-➡️ Curl para actualizar correo y contrasena:
-Es necesario incluir el nombre del usuario como parámetro en la URL.
+➡️ Curl to update email and password:
+It is necessary to include the user name as a parameter in the URL.
 
 ```
 curl --location --request PUT 'localhost:8080/exercise/api/update-email-and-password/Felipe Rodriguez' \
@@ -155,34 +155,31 @@ curl --location --request PUT 'localhost:8080/exercise/api/update-email-and-pass
 
 ```
 
-![Actualizar campos de usuario](images/update-user.gif)
+![Update user](images/update-user.gif)
 
-#### Enlaces importantes
-Para acceder a Swagger UI o a la consola de H2, utiliza los siguientes enlaces, siempre y cuando la aplicación esté en funcionamiento:
+#### Important Links
+To access Swagger UI or the H2 Console, use the following links, as long as the application is running:
 
-- SwaggerUI (Informacion de endpoints): http://localhost:8080/swagger-ui/index.html
-- H2 Console (Consola de base de datos en memoria): http://localhost:8080/h2-console/
+- SwaggerUI (Endpoint Information): http://localhost:8080/swagger-ui/index.html
+- H2 Console (In-Memory Database Console): http://localhost:8080/h2-console/
 
-## Ejecutando las pruebas ⚙️
+## Running the tests ⚙️
 
-Para arrancar los test unitarios, abrir la terminal en el directorio **exercise** y ejecutar el siguiente comando
+To start the unit tests, open the terminal in the **exercise** directory and run the following command
 
 ```
 gradle test
 ```
 
-## Construido con 🛠️
+## Built with 🛠️
 
-_Menciona las herramientas que utilizaste para crear tu proyecto_
+* [Spring Boot](https://spring.io/projects/spring-boot) - Microservices development tool
+* [Gradle](https://gradle.org/) - Dependency manager
+* [Spring Security](https://spring.io/projects/spring-security) - Authentication and access control framework
+* [Lombok](https://projectlombok.org/) - Library to simplify code construction
+* [Swagger](https://swagger.io/) - API documentation tool
+* [H2](https://www.h2database.com/html/main.html) - Java SQL database
 
-* [Spring Boot](https://spring.io/projects/spring-boot) - Herramienta de desarrollo de microservicios
-* [Gradle](https://gradle.org/) - Manejador de dependencias
-* [Spring Security](https://spring.io/projects/spring-security) - Marco de autenticación y control de acceso
-* [Lombok](https://projectlombok.org/) - Libreria para simplificar la construccion de codigo
-* [Swagger](https://swagger.io/) - Herramienta para documentacion de apis
-* [H2](https://www.h2database.com/html/main.html) - Base de datos SQL de Java
+## Authors ✒️
 
-
-## Autores ✒️
-
-* **Juan Claudio Valenzuela** - *Trabajo Inicial* - [jvalenzuelaortega](https://github.com/jvalenzuelaortega)
+* **Juan Claudio Valenzuela** - *Initial Work* - [jvalenzuelaortega](https://github.com/jvalenzuelaortega)
